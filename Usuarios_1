@@ -1,0 +1,185 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ceacdam;
+
+import java.io.Serializable;
+import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+/**
+ *
+ * @author ibai
+ */
+@Entity
+@Table(name = "USUARIOS")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Usuarios_1.findAll", query = "SELECT u FROM Usuarios_1 u")
+    , @NamedQuery(name = "Usuarios_1.findById", query = "SELECT u FROM Usuarios_1 u WHERE u.id = :id")
+    , @NamedQuery(name = "Usuarios_1.findByNombre", query = "SELECT u FROM Usuarios_1 u WHERE u.nombre = :nombre")
+    , @NamedQuery(name = "Usuarios_1.findByApellidos", query = "SELECT u FROM Usuarios_1 u WHERE u.apellidos = :apellidos")
+    , @NamedQuery(name = "Usuarios_1.findByTelefono", query = "SELECT u FROM Usuarios_1 u WHERE u.telefono = :telefono")
+    , @NamedQuery(name = "Usuarios_1.findByMail", query = "SELECT u FROM Usuarios_1 u WHERE u.mail = :mail")
+    , @NamedQuery(name = "Usuarios_1.findByUsuario", query = "SELECT u FROM Usuarios_1 u WHERE u.usuario = :usuario")
+    , @NamedQuery(name = "Usuarios_1.findByPass", query = "SELECT u FROM Usuarios_1 u WHERE u.pass = :pass")
+    , @NamedQuery(name = "Usuarios_1.findByTipo", query = "SELECT u FROM Usuarios_1 u WHERE u.tipo = :tipo")})
+public class Usuarios_1 implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @Column(name = "ID")
+    private Integer id;
+    @Basic(optional = false)
+    @Column(name = "NOMBRE")
+    private String nombre;
+    @Basic(optional = false)
+    @Column(name = "APELLIDOS")
+    private String apellidos;
+    @Basic(optional = false)
+    @Column(name = "TELEFONO")
+    private String telefono;
+    @Basic(optional = false)
+    @Column(name = "MAIL")
+    private String mail;
+    @Basic(optional = false)
+    @Column(name = "USUARIO")
+    private String usuario;
+    @Basic(optional = false)
+    @Column(name = "PASS")
+    private String pass;
+    @Basic(optional = false)
+    @Column(name = "TIPO")
+    private String tipo;
+    @OneToMany(mappedBy = "codUser")
+    private Collection<Pedidos> pedidosCollection;
+
+    public Usuarios_1() {
+    }
+
+    public Usuarios_1(Integer id) {
+        this.id = id;
+    }
+
+    public Usuarios_1(Integer id, String nombre, String apellidos, String telefono, String mail, String usuario, String pass, String tipo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.telefono = telefono;
+        this.mail = mail;
+        this.usuario = usuario;
+        this.pass = pass;
+        this.tipo = tipo;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    @XmlTransient
+    public Collection<Pedidos> getPedidosCollection() {
+        return pedidosCollection;
+    }
+
+    public void setPedidosCollection(Collection<Pedidos> pedidosCollection) {
+        this.pedidosCollection = pedidosCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Usuarios_1)) {
+            return false;
+        }
+        Usuarios_1 other = (Usuarios_1) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "ceacdam.Usuarios_1[ id=" + id + " ]";
+    }
+    
+}
