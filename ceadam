@@ -1,0 +1,324 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ceacdam;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Scanner;
+/**
+ *
+ * @author ibai
+ */
+public class ceacdam {    
+    /**
+     * @param args the command line arguments
+     */
+    private Connection conn;    
+    public static void main(String[] args) throws SQLException  {
+        // TODO code application logic here
+        MenuPrincipal();
+    }  
+    static void MenuPrincipal() throws SQLException{
+        int opcion;
+        Scanner teclado = new Scanner(System.in);
+        do{
+            do{
+                System.out.println("Que quieres hacer \n");
+                System.out.println("1. Login \n");
+                System.out.println("2. Registrarse \n");
+                System.out.println("3. Salir \n");
+                opcion=teclado.nextInt();            
+            }while(opcion<1 || opcion>=4);
+            switch (opcion){
+                case 1:
+                    System.out.println("Login");
+                    login();
+                    break;
+                case 2:
+                    System.out.println("Registrarse");
+                    registrarse();
+                    break;
+                case 3:
+                    System.out.println("Gracias por venir");
+            }
+        }
+        while(opcion == 2);
+    }
+    static void registrarse() throws SQLException{
+        int id =1;
+        String nombre;
+        String apellidos;
+        String telf;
+        String mail;
+        String user;
+        String pass;
+        boolean valido = false;
+        Scanner teclado = new Scanner (System.in);
+        do{
+            System.out.println("Introduce tu nombre:");
+            nombre=teclado.next();
+            System.out.println("Introduce tus apellidos:");
+            apellidos=teclado.next();
+            System.out.println("Introduce tu telefono:");
+            telf=teclado.next();
+            System.out.println("Introduce tu correo electronico:");
+            mail=teclado.next();
+            System.out.println("Introduce tu usuario:");
+            user=teclado.next();
+            System.out.println("Introduce tu password:");   
+            pass=teclado.next();
+            System.out.println("Usuario: "+nombre+" "+apellidos+" "+telf+" "+mail+" "+user+" "+pass);
+            
+            String urlBBDD = "jdbc:derby://localhost:1527/DAM_Project";    
+            String usuario = "root";
+            String contraseña = "root123";
+            Connection c = DriverManager.getConnection(urlBBDD, usuario, contraseña);   
+
+            PreparedStatement sel = c.prepareStatement("Select * from Usuarios where user=? or mail=?"); 
+            sel.setString(1, user);
+            sel.setString(2, mail);
+            ResultSet r = sel.executeQuery();
+            if(r.next()){
+                System.out.println("Usuario existente");
+            }
+            else
+                valido=true;
+            
+            try {
+                c.close();
+            } finally {
+                c = null;
+            }
+        }while(!valido);
+        
+        String urlBBDD = "jdbc:derby://localhost:1527/DAM_Project";    
+        String usuario = "root";
+        String contraseña = "root123";
+        Connection c = DriverManager.getConnection(urlBBDD, usuario, contraseña);
+        
+        PreparedStatement MaxId = c.prepareStatement("Select max(id) from Usuarios");
+        ResultSet r=MaxId.executeQuery();
+        if(r.next()){
+            id = r.getInt(1)+1;
+        }
+        else
+            id=1;
+        System.out.println(id);
+               
+        PreparedStatement Insert = c.prepareStatement("Insert into Usuarios values (?,?,?,?,?,?,?,?)");
+        Insert.setInt(1, id);
+        Insert.setString(2, nombre);
+        Insert.setString(3, apellidos);
+        Insert.setString(4, telf);
+        Insert.setString(5, mail);
+        Insert.setString(6, user);
+        Insert.setString(7, pass);
+        Insert.setInt(8, 2);
+        Insert.executeUpdate();
+        
+        try {
+            c.close();
+        } finally {
+            c = null;
+        }
+
+    }
+    static void login() throws SQLException{
+        Scanner teclado = new Scanner(System.in);
+        System.out.println("Introduce tu usuario");
+        String user = teclado.next();
+        System.out.println("Introduce tu pass");
+        String pass = teclado.next();
+        int tipo=0;
+        
+        String urlBBDD = "jdbc:derby://localhost:1527/DAM_Project";
+        String usuario = "root";
+        String contraseña = "root123";
+        Connection c = DriverManager.getConnection(urlBBDD, usuario, contraseña);
+
+        PreparedStatement sel = c.prepareStatement("Select tipo from Usuarios where user=? and pass=?"); 
+        sel.setString(1, user);
+        sel.setString(2, pass);
+        ResultSet r = sel.executeQuery();
+        
+        if(r.next()){
+            tipo = r.getInt(1);
+            System.out.println("El tipo es: "+tipo);
+        }
+        else{
+            System.out.println("El usuario no existe");
+        }
+        
+        try {
+            c.close();
+        } finally {
+            c = null;
+        }
+        
+        if(tipo==1)
+            MenuAdmin();
+        else if (tipo==2)
+            MenuUsuario();
+    }
+    static void MenuAdmin() throws SQLException{
+        int opcion=0;
+        Scanner teclado = new Scanner(System.in);
+        do{
+            do{
+                System.out.println("1. Introducir Productos");
+                System.out.println("2. Introducir nuevo administrador");
+                System.out.println("3. Salir");
+                opcion = teclado.nextInt();
+            }while(opcion<0 || opcion>3);
+            switch(opcion){
+                case 1:
+                    introduceProd();
+                    break;
+                case 2:
+                    introduceAdmin();
+            }
+        }while(opcion !=3);    
+    }
+    static void MenuUsuario() throws SQLException{
+        int opcion=0;
+        Scanner teclado = new Scanner(System.in);
+        do{
+            do{
+                System.out.println("1. Ver productos");
+                System.out.println("2. Salir");
+                opcion = teclado.nextInt();
+            }while(opcion<0 || opcion>2);
+            switch(opcion){
+                case 1:
+                    VerProductos();
+                    break;
+            }
+        }while(opcion !=2);   
+    }
+    static void introduceProd() throws SQLException{
+        int opcion=0;
+        int id=0;
+        Scanner teclado = new Scanner(System.in);
+        do{
+            System.out.println("Nombre del producto");
+            String nombre = teclado.next();
+            System.out.println("Precio del producto");
+            String precio = teclado.next();
+            System.out.println("Peso del producto");
+            String peso = teclado.next();
+            
+            String urlBBDD = "jdbc:derby://localhost:1527/DAM_Project";
+            String usuario = "root";
+            String contraseña = "root123";
+            Connection c = DriverManager.getConnection(urlBBDD, usuario, contraseña);
+
+            PreparedStatement MaxId = c.prepareStatement("Select max(ID) from Productos");
+            ResultSet r=MaxId.executeQuery();
+            if(r.next()){
+                id = r.getInt(1)+1;
+            }
+            else
+                id=1;
+
+
+            PreparedStatement Insert = c.prepareStatement("Insert into Productos values (?,?,?,?)");
+            Insert.setInt(1, id);
+            Insert.setString(2, nombre);
+            Insert.setString(3, precio);
+            Insert.setString(4, peso);
+            Insert.executeUpdate();
+
+            try {
+                c.close();
+            } finally {
+                c = null;
+            }
+            
+            System.out.println("Desea introducir otro producto 1. Si­  2.No");
+            opcion = teclado.nextInt();
+        }while(opcion==1);
+    }
+    static void introduceAdmin() throws SQLException{
+        int opcion=0;
+        int id=0;
+        Scanner teclado = new Scanner(System.in);
+        do{
+            String urlBBDD = "jdbc:derby://localhost:1527/DAM_Project";
+            String usuario = "root";
+            String contraseña = "root123";
+            Connection c = DriverManager.getConnection(urlBBDD, usuario, contraseña);
+
+            PreparedStatement MaxId = c.prepareStatement("Select max(id) from Usuarios");
+            ResultSet r=MaxId.executeQuery();
+            if(r.next()){
+                id = r.getInt(1)+1;
+            }
+            else
+                id=1;
+
+            
+            System.out.println("Introduce tu nombre:");
+            String nombre=teclado.next();
+            System.out.println("Introduce tus apellidos:");
+            String apellidos=teclado.next();
+            System.out.println("Introduce tu telefono:");
+            String telf=teclado.next();
+            System.out.println("Introduce tu correo electronico:");
+            String mail=teclado.next();
+            System.out.println("Introduce tu usuario:");
+            String user=teclado.next();
+            System.out.println("Introduce tu password:");
+            String pass=teclado.next();
+            System.out.println("Usuario: "+nombre+" "+apellidos+" "+telf+" "+mail+" "+user+" "+pass);
+            
+            PreparedStatement Insert = c.prepareStatement("Insert into Usuarios values (?,?,?,?,?,?,?,?)");
+            Insert.setInt(1, id);
+            Insert.setString(2, nombre);
+            Insert.setString(3, apellidos);
+            Insert.setString(4, telf);
+            Insert.setString(5, mail);
+            Insert.setString(6, user);
+            Insert.setString(7, pass);
+            Insert.setInt(8, 1);
+            Insert.executeUpdate();
+
+            try {
+                c.close();
+            } finally {
+                c = null;
+            }
+            
+            
+            System.out.println("Desea introducir otro Adminsitrador 1. Si­  2.No");
+            opcion = teclado.nextInt();
+        }while(opcion==1);
+    }
+    static void VerProductos() throws SQLException{
+        String urlBBDD = "jdbc:derby://localhost:1527/DAM_Project";
+        String usuario = "root";
+        String contraseña = "root123";
+        Connection c = DriverManager.getConnection(urlBBDD, usuario, contraseña);
+        
+        PreparedStatement Productos = c.prepareStatement("Select * from productos");
+        ResultSet r=Productos.executeQuery();
+        
+        while(r.next()){
+            System.out.println("Codigo: "+r.getInt("ID")); 
+            System.out.println("Producto: "+r.getString("NOMBRE")); 
+            System.out.println("Precio: "+r.getString("PRECIO"));
+            System.out.println("Peso: "+r.getString("PESO")); 
+            System.out.println("------------------------");
+        }
+        
+        try {
+            c.close();
+        } finally {
+            c = null;
+        }
+    }    
+}
