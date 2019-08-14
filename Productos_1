@@ -1,0 +1,133 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ceacdam;
+
+import java.io.Serializable;
+import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+/**
+ *
+ * @author ibai
+ */
+@Entity
+@Table(name = "PRODUCTOS")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Productos_1.findAll", query = "SELECT p FROM Productos_1 p")
+    , @NamedQuery(name = "Productos_1.findById", query = "SELECT p FROM Productos_1 p WHERE p.id = :id")
+    , @NamedQuery(name = "Productos_1.findByNombre", query = "SELECT p FROM Productos_1 p WHERE p.nombre = :nombre")
+    , @NamedQuery(name = "Productos_1.findByPrecio", query = "SELECT p FROM Productos_1 p WHERE p.precio = :precio")
+    , @NamedQuery(name = "Productos_1.findByPeso", query = "SELECT p FROM Productos_1 p WHERE p.peso = :peso")})
+public class Productos_1 implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @Column(name = "ID")
+    private Integer id;
+    @Basic(optional = false)
+    @Column(name = "NOMBRE")
+    private String nombre;
+    @Basic(optional = false)
+    @Column(name = "PRECIO")
+    private String precio;
+    @Basic(optional = false)
+    @Column(name = "PESO")
+    private String peso;
+    @OneToMany(mappedBy = "codProd")
+    private Collection<Pedidos> pedidosCollection;
+
+    public Productos_1() {
+    }
+
+    public Productos_1(Integer id) {
+        this.id = id;
+    }
+
+    public Productos_1(Integer id, String nombre, String precio, String peso) {
+        this.id = id;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.peso = peso;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(String precio) {
+        this.precio = precio;
+    }
+
+    public String getPeso() {
+        return peso;
+    }
+
+    public void setPeso(String peso) {
+        this.peso = peso;
+    }
+
+    @XmlTransient
+    public Collection<Pedidos> getPedidosCollection() {
+        return pedidosCollection;
+    }
+
+    public void setPedidosCollection(Collection<Pedidos> pedidosCollection) {
+        this.pedidosCollection = pedidosCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Productos_1)) {
+            return false;
+        }
+        Productos_1 other = (Productos_1) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "ceacdam.Productos_1[ id=" + id + " ]";
+    }
+    
+}
